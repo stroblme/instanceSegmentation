@@ -11,8 +11,11 @@ import time
 BLUR = True
 BG_PTH = "bg1.jpg"
 
+utilsInst = utils()
+utilsInst.init()
+
 # Load the DeepLabv3 model to memory
-model = utils.load_model()
+utilsInst.load_model()
 
 # Read the background image to memory
 bg_image = cv2.imread(BG_PTH)
@@ -33,7 +36,8 @@ ax1.set_yticks([])
 
 
 # Create two image objects to picture on top of the axes defined above
-im1 = ax1.imshow(utils.grab_frame(video_session))
+im1 = ax1.imshow(utilsInst.grab_frame(video_session))
+
 
 # Switch on the interactive mode in matplotlib
 plt.ion()
@@ -41,7 +45,7 @@ plt.show()
 
 # Read frames from the video, make realtime predictions and display the same
 while True:
-    frame = utils.grab_frame(video_session)
+    frame = utilsInst.grab_frame(video_session)
 
     # Ensure there's something in the image (not completely blacnk)
     if np.any(frame):
@@ -49,7 +53,7 @@ while True:
 
         # Read the frame's width, height, channels and get the labels' predictions from utilities
         width, height, channels = frame.shape
-        labels = utils.get_pred(frame, model)
+        labels = utilsInst.get_pred(frame)
         
         predT = time.time()
         print(f"predT = {predT - start}")
