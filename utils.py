@@ -17,7 +17,7 @@ class utils:
 
     def load_model(self):
         # Load the DeepLab v3 model to system
-        self.model = torch.hub.load('pytorch/vision:v0.6.0', 'deeplabv3_resnet101', pretrained=True)
+        self.model = torch.hub.load('pytorch/vision:v0.8.2', 'deeplabv3_resnet101', pretrained=True)
         self.model.to(self.device).eval()
         # return self.model
 
