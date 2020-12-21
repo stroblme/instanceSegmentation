@@ -1,6 +1,7 @@
 import cv2
 import torch
 import torchvision
+import time 
 
 class utils:
     @staticmethod
@@ -19,21 +20,33 @@ class utils:
     
     @staticmethod
     def get_pred(img, model):
+        start = time.time()
         # See if GPU is available and if yes, use it
         device = "cuda" if torch.cuda.is_available() else "cpu"
+        torch.set_num_threads(10)
 
         # Define the standard transforms that need to be done at inference time
         imagenet_stats = [[0.485, 0.456, 0.406], [0.485, 0.456, 0.406]]
         preprocess = torchvision.transforms.Compose([torchvision.transforms.ToTensor(),
                                                      torchvision.transforms.Normalize(mean = imagenet_stats[0],
                                                                                       std  = imagenet_stats[1])])
+
+        initT = time.time()
+        print(f"initT = {initT - start}")
+
         input_tensor = preprocess(img).unsqueeze(0)
         input_tensor = input_tensor.to(device)
+
+        prepT = time.time()
+        print(f"prepT = {prepT - initT}")
 
         # Make the predictions for labels across the image
         with torch.no_grad():
             output = model(input_tensor)["out"][0]
             output = output.argmax(0)
+
+        predT = time.time()
+        print(f"predT = {predT - prepT}")
         
         # Return the predictions
         return output.cpu().numpy()
